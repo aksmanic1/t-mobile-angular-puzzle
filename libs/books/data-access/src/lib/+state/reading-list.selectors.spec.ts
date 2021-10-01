@@ -34,7 +34,14 @@ describe('ReadingList Selectors', () => {
     };
   });
 
-  describe('Books Selectors', () => {
+  describe('ReadingList Selectors', () => {
+    it('getBooks() should return the book results', () => {
+      const results = ToReadSelectors.getAllBooks(state);
+
+      expect(results.length).toBe(3);
+      expect(results.map(x => x.id)).toEqual(['A', 'B', 'C']);
+    });
+
     it('getReadingList() should return the list of Books', () => {
       const results = ToReadSelectors.getReadingList(state);
 
