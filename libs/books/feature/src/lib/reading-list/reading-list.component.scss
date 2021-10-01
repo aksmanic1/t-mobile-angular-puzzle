@@ -22,8 +22,8 @@
 }
 
 .reading-list-item--cover {
-  max-width: 36px;
-  max-height: 36px;
+  max-width: 100px;
+  max-height: 100px;
   margin-right: $spacing-xxs;
 }
 
@@ -35,9 +35,14 @@
 
 .reading-list-item--details--title,
 .reading-list-item--details--author {
+  font-size: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+button.mat-icon-button {
+  transform: scale(1.75);
 }
 
 .empty {
