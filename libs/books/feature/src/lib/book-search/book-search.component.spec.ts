@@ -1,17 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { createBook, SharedTestingModule } from '@tmo/shared/testing';
+import { ReplaySubject } from 'rxjs';
 
 import { BooksFeatureModule } from '../books-feature.module';
 import { BookSearchComponent } from './book-search.component';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { confirmedAddToReadingList } from '@tmo/books/data-access';
 
 describe('ProductsListComponent', () => {
   let component: BookSearchComponent;
   let fixture: ComponentFixture<BookSearchComponent>;
+  let actions: ReplaySubject<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule]
+      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
+      providers: [provideMockActions(() => actions)]
     }).compileComponents();
   }));
 
@@ -19,6 +24,10 @@ describe('ProductsListComponent', () => {
     fixture = TestBed.createComponent(BookSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {
@@ -54,5 +63,21 @@ describe('ProductsListComponent', () => {
 
   it('should search for a book', () => {
     component.searchBooks();
+  });
+
+  it('should display snackBar', () => {
+    const book = createBook('testBook');
+    component.displaySnackBarOnAdd(book);
+  });
+
+  it('should only add book on success', () => {
+    const book = createBook('testBook');
+    const spy = spyOn(component, 'displaySnackBarOnAdd');
+
+    actions = new ReplaySubject();
+    component.ngOnInit();
+    actions.next(confirmedAddToReadingList({ book }));
+
+    expect(spy).toBeCalled();
   });
 });
