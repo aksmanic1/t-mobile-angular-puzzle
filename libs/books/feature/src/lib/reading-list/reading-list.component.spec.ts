@@ -6,14 +6,24 @@ import {
 
 import { ReadingListComponent } from './reading-list.component';
 import { BooksFeatureModule } from '@tmo/books/feature';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReplaySubject } from 'rxjs';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { confirmedRemoveFromReadingList } from '@tmo/books/data-access';
 
 describe('ReadingListComponent', () => {
   let component: ReadingListComponent;
   let fixture: ComponentFixture<ReadingListComponent>;
+  let actions: ReplaySubject<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, SharedTestingModule]
+      imports: [
+        BooksFeatureModule,
+        SharedTestingModule,
+        BrowserAnimationsModule
+      ],
+      providers: [provideMockActions(() => actions)]
     }).compileComponents();
   }));
 
@@ -30,5 +40,21 @@ describe('ReadingListComponent', () => {
   it('should remove book from reading list', () => {
     const item = createReadingListItem('testBook');
     component.removeFromReadingList(item);
+  });
+
+  it('should display snackBar', () => {
+    const item = createReadingListItem('testBook');
+    component.displaySnackBarOnRemove(item);
+  });
+
+  it('should only remove book on success', () => {
+    const item = createReadingListItem('testBook');
+    const spy = spyOn(component, 'displaySnackBarOnRemove');
+
+    actions = new ReplaySubject();
+    component.ngOnInit();
+    actions.next(confirmedRemoveFromReadingList({ item }));
+
+    expect(spy).toBeCalled();
   });
 });
