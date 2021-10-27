@@ -61,6 +61,22 @@ const readingListReducer = createReducer(
       { bookId: action.item.bookId, ...action.item },
       state
     )
+  ),
+  on(ReadingListActions.markBookAsRead, (state, action) =>
+    readingListAdapter.upsertOne(
+      {
+        finished: true,
+        finishedDate: new Date().toISOString(),
+        ...action.item
+      },
+      state
+    )
+  ),
+  on(ReadingListActions.failedMarkBookAsRead, (state, action) =>
+    readingListAdapter.upsertOne(
+      { finished: false, finishedDate: '', ...action.item },
+      state
+    )
   )
 );
 

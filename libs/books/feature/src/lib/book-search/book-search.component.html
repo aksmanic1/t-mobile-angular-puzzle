@@ -36,13 +36,19 @@
           <p [innerHTML]="b.description"></p>
           <div>
             <button
+              data-testing="book-add-button"
               mat-flat-button
               color="primary"
               (click)="addBookToReadingList(b)"
               [attr.aria-label]="'Add ' + b.title + ' to reading list'"
               [disabled]="b.isAdded"
             >
-              Want to Read
+              <ng-container
+                *ngIf="b.isFinished; then finished; else unfinished"
+              >
+              </ng-container>
+              <ng-template #finished> Finished </ng-template>
+              <ng-template #unfinished> Want to Read </ng-template>
             </button>
           </div>
         </div>

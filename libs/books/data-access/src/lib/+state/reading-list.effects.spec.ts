@@ -65,21 +65,6 @@ describe('ToReadEffects', () => {
     httpMock.expectOne('/api/reading-list').flush([]);
   });
 
-  it('should undo add book', done => {
-    actions = new ReplaySubject();
-    const book = createBook('testBook');
-    actions.next(ReadingListActions.addToReadingList({ book }));
-
-    effects.addBook$.subscribe(action => {
-      expect(action).to.eql(
-        ReadingListActions.confirmedAddToReadingList({ book })
-      );
-      done();
-    });
-
-    httpMock.expectOne('/api/reading-list').flush([]);
-  });
-
   it('should remove book', done => {
     actions = new ReplaySubject();
     const item = createReadingListItem('testBook');
@@ -93,6 +78,21 @@ describe('ToReadEffects', () => {
     });
 
     httpMock.expectOne('/api/reading-list/testBook').flush([]);
+  });
+
+  it('should mark book status as finished', done => {
+    actions = new ReplaySubject();
+    const item = createReadingListItem('testBook');
+    actions.next(ReadingListActions.markBookAsRead({ item }));
+
+    effects.markBookStatus$.subscribe(action => {
+      expect(action).to.eql(
+        ReadingListActions.confirmedMarkBookAsRead({ item })
+      );
+      done();
+    });
+
+    httpMock.expectOne('/api/reading-list/testBook/finished').flush([]);
   });
 
   it('should call ngrxOnInitEffects()', done => {
