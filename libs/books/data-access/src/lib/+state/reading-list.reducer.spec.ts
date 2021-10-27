@@ -71,6 +71,16 @@ describe('Books Reducer', () => {
       expect(result.ids).to.eql(['B']);
     });
 
+    it('markBookAsRead should mark book as complete', () => {
+      const action = ReadingListActions.markBookAsRead({
+        item: createReadingListItem('X')
+      });
+
+      const result: State = reducer(state, action);
+
+      expect(result.entities.X.finished).to.eql(true);
+    });
+
     it('failedAddToReadingList should undo book addition to the state', () => {
       const action = ReadingListActions.failedAddToReadingList({
         book: createBook('B')
@@ -90,6 +100,16 @@ describe('Books Reducer', () => {
 
       expect(result.ids).to.eql(['A', 'B', 'C']);
     });
+  });
+
+  it('failedMarkBookAsRead should mark book as complete', () => {
+    const action = ReadingListActions.failedMarkBookAsRead({
+      item: createReadingListItem('X')
+    });
+
+    const result: State = reducer(initialState, action);
+
+    expect(result.entities.X.finished).to.eql(false);
   });
 
   describe('unknown action', () => {

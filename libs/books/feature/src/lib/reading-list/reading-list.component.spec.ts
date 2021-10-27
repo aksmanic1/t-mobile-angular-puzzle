@@ -31,4 +31,9 @@ describe('ReadingListComponent', () => {
     const item = createReadingListItem('testBook');
     component.removeFromReadingList(item);
   });
+
+  it('should mark book as read', () => {
+    const item = createReadingListItem('testBook');
+    component.markBookAsRead(item);
+  });
 });
